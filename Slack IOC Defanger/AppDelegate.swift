@@ -28,10 +28,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         
         if let button = statusItem.button {
-            // Using a native SF Symbol for the icon
-            button.image = NSImage(systemSymbolName: "ladybug", accessibilityDescription: "Defanger")
-            // Ensures the icon adapts to light/dark mode automatically
-            button.image?.isTemplate = true
+            if let button = statusItem.button {
+                if let customIcon = NSImage(named: "DefangerIcon") {
+                    // Force the image down to standard menu bar dimensions
+                    customIcon.size = NSSize(width: 18, height: 18)
+                    customIcon.isTemplate = true
+                    button.image = customIcon
+                    button.image?.accessibilityDescription = "Defanger"
+                } else {
+                    // FALLBACK: If the image fails to load, show the ladybug so you don't lose the app
+                    button.image = NSImage(systemSymbolName: "ladybug", accessibilityDescription: "Defanger")
+                    print("ERROR: Could not find 'DefangerIcon' in Assets.xcassets")
+                }
+            }
         }
         
         let menu = NSMenu()
